@@ -34,7 +34,7 @@ features.
 
 =head2 user module
 
-A regular Perl module that wants to define some features defined by L</"definer
+A regular Perl module that wants to declare some features defined by L</"definer
 module">.
 
 =head2 feature name
@@ -112,6 +112,11 @@ should not require any module dependency, but a helper module can be written to
 help check that declared feature sets and features are known and the feature
 values conform to defined schemas.
 
+Not all features from a feature set need to be declared by the user module. The
+undeclared features will have C<undef> as their values for the user module.
+However, features defined as required (C<< req => 1 >> in the specification)
+MUST be declared.
+
 For example, in L<Text::Table::More>:
 
  our %FEATURES = (
@@ -124,7 +129,7 @@ For example, in L<Text::Table::More>:
          align_cell_containing_wide_characters => 1,
          align_cell_containing_multiple_lines  => 1,
          speed => {
-             value => 'slow',
+             value => 'slow', # if unspecified, value will become undef
              summary => "It's certainly slower than Text::Table::Tiny, etc; and it can still be made faster after some optimization",
          },
      },
