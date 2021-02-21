@@ -145,9 +145,9 @@ and in L<Text::Table::Any>:
 
  our %FEATURES = (
      TextTable => {
-         align_cell_containing_color_codes     => {value => undef, summary => 'Depends on the backend used'},,
-         align_cell_containing_wide_characters => {value => undef, summary => 'Depends on the backend used'},,
-         align_cell_containing_multiple_lines  => {value => undef, summary => 'Depends on the backend used'},,
+         align_cell_containing_color_codes     => {value => undef, summary => 'Depends on the backend used'},
+         align_cell_containing_wide_characters => {value => undef, summary => 'Depends on the backend used'},
+         align_cell_containing_multiple_lines  => {value => undef, summary => 'Depends on the backend used'},
          speed                                 => {value => undef, summary => 'Depends on the backend used'},
      },
  );
@@ -178,11 +178,11 @@ distribution metadata. Currently no specific recommendation is given.
 =head2 Why not roles?
 
 Role frameworks like L<Role::Tiny> allow you to require a module to have certain
-subroutines, i.e. to follow some kind of interface. This can be used to
-achieving the same goal of defining and declaring features, by representing
-features as required subroutines and feature sets as roles. However,
-Module::Features wants declaring features to have negligible overhead, including
-no extra runtime dependency.
+subroutines, i.e. to follow some kind of interface. This can be used to achieve
+the same goal of defining and declaring features, by representing features as
+required subroutines and feature sets as roles. However, Module::Features wants
+declaring features to have negligible overhead, including no extra runtime
+dependency.
 
 
 =head1 SEE ALSO
