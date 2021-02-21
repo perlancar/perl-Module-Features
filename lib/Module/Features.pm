@@ -10,7 +10,10 @@ package Module::Features;
 
 =head1 DESCRIPTION
 
-This document specifies a way to define and declare features for modules.
+This document specifies a very easy and lightweight way to define and declare
+features for modules. A definer module defines the feature set, other modules
+declare features that they have or don't have have, and user can easily check
+and select modules based on features he/she wants.
 
 
 =head1 SPECIFICATION STATUS
