@@ -66,7 +66,7 @@ L<specification|/"feature specification">.
 =head2 Defining feature set
 
 L<Definer module|/"definer module"> defines feature set by putting it in
-C<%FEATURES_DEF> package variable. Defining feature set does not require any
+C<%FEATURES_DEF> package variable. Defining feature set should not require any
 module dependency.
 
 For example, in L<Module::Features::TextTable>:
@@ -108,7 +108,7 @@ For example, in L<Module::Features::TextTable>:
 
 L<User module|/"user module"> declares features that it supports (or does not
 support) via putting it in C<%FEATURES> package variable. Declaring features
-does not require any module dependency, but a helper module can be written to
+should not require any module dependency, but a helper module can be written to
 help check that declared feature sets and features are known and the feature
 values conform to defined schemas.
 
@@ -155,7 +155,10 @@ and in L<Text::Table::Any>:
 =head2 Checking whether a module has a certain feature
 
 A L</"user module"> user can check whether a user module has a certain feature
-simply by checking the user module's C<%FEATURES>. For example, to check whether
+simply by checking the user module's C<%FEATURES>. Checking features of a module
+should not require any module dependency.
+
+For example, to check whether
 Text::Table::Sprintf supports aligning cells that contain multiple lines:
 
  if (do { my $val = $Text::Table::Sprintf::FEATURES{TextTable}{align_cell_containing_multiple_lines}; ref $val eq 'HASH' ? $val->{value} : $val }) {
