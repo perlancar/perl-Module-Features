@@ -28,9 +28,9 @@ The series 0.1.x version is still unstable.
 =head2 definer module
 
 Module in the namespace of C<Module::Features::>I<FeatureSetName> that contains
-L</"feature set specification">. This module defines what each feature in the
-feature set means. A L</"user module"> follows the specification and declares
-features.
+L</"feature set specification">. This module describes what each feature in the
+feature set means, what values are valid for the feature, and so on. A L</"user
+module"> follows the specification and declares features.
 
 =head2 user module
 
