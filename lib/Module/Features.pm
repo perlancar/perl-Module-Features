@@ -69,7 +69,7 @@ L<Definer module|/"definer module"> defines feature set by putting it in
 C<%FEATURES_DEF> package variable. Defining feature set does not require any
 module dependency.
 
-For example, in C<Module::Features::TextTable>:
+For example, in L<Module::Features::TextTable>:
 
  # a DefHash
  our %FEATURES_DEF = (
