@@ -142,9 +142,9 @@ While in L<Text::Table::Sprintf>:
 
  our %FEATURES = (
      TextTable => {
-         align_cell_containing_color_codes     => 1,
-         align_cell_containing_wide_characters => 1,
-         align_cell_containing_multiple_lines  => 1,
+         align_cell_containing_color_codes     => 0,
+         align_cell_containing_wide_characters => 0,
+         align_cell_containing_multiple_lines  => 0,
          speed                                 => 'fast',
      },
  );
