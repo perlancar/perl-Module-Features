@@ -126,8 +126,8 @@ For example, in L<Text::Table::More>:
      # each key is a feature set name.
      TextTable => {
          # each key is a feature name defined in the feature set. each value is
-         # either a feature value, or a DeHash that contains the feature value
-         # in the 'feature' property, and notes in 'summary', and other things.
+         # either a feature value, or a DefHash that contains the feature value
+         # in the 'value' property, and notes in 'summary', and other things.
          align_cell_containing_color_codes     => 1,
          align_cell_containing_wide_characters => 1,
          align_cell_containing_multiple_lines  => 1,
