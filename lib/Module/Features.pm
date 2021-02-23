@@ -35,7 +35,7 @@ L</"feature set specification">. This module describes what each feature in the
 feature set means, what values are valid for the feature, and so on. A L</"user
 module"> follows the specification and declares features.
 
-=head2 user module
+=head2 declarer module
 
 A regular Perl module that wants to declare some features defined by L</"definer
 module">.
@@ -109,16 +109,16 @@ For example, in L<Module::Features::TextTable>:
 
 =head2 Declaring features
 
-L<User module|/"user module"> declares features that it supports (or does not
-support) via putting it in C<%FEATURES> package variable. Declaring features
-should not require any module dependency, but a helper module can be written to
-help check that declared feature sets and features are known and the feature
-values conform to defined schemas.
+L<Declarer module|/"declarer module"> declares features that it supports (or
+does not support) via putting it in C<%FEATURES> package variable. Declaring
+features should not require any module dependency, but a helper module can be
+written to help check that declared feature sets and features are known and the
+feature values conform to defined schemas.
 
-Not all features from a feature set need to be declared by the user module. The
-undeclared features will have C<undef> as their values for the user module.
-However, features defined as required (C<< req => 1 >> in the specification)
-MUST be declared.
+Not all features from a feature set need to be declared by the declarer module.
+The undeclared features will have C<undef> as their values for the declarer
+module. However, features defined as required (C<< req => 1 >> in the
+specification) MUST be declared.
 
 For example, in L<Text::Table::More>:
 
@@ -162,9 +162,9 @@ and in L<Text::Table::Any>:
 
 =head2 Checking whether a module has a certain feature
 
-A L</"user module"> user can check whether a user module has a certain feature
-simply by checking the user module's C<%FEATURES>. Checking features of a module
-should not require any module dependency.
+A L</"Declarer module"> user can check whether a declarer module has a certain
+feature simply by checking the declarer module's C<%FEATURES>. Checking features
+of a module should not require any module dependency.
 
 For example, to check whether
 Text::Table::Sprintf supports aligning cells that contain multiple lines:
