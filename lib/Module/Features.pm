@@ -28,17 +28,26 @@ The series 0.1.x version is still unstable.
 
 =head1 GLOSSARY
 
-=head2 definer module
+=head2 feature definer module
 
-Module in the namespace of C<Module::Features::>I<FeatureSetName> that contains
+A module in "C<Module::Features::>I<FeatureSetName>" namespace that contains
 L</"feature set specification">. This module describes what each feature in the
-feature set means, what values are valid for the feature, and so on. A L</"user
-module"> follows the specification and declares features.
+feature set means, what values are valid for the feature, and so on. A
+L</"feature declarer module"> follows this specification and declares features.
 
-=head2 declarer module
+=head2 feature declarer module
 
-A regular Perl module that wants to declare some features defined by L</"definer
-module">.
+A regular Perl module that wants to declare some features defined by L</"feature
+definer module">. Module name must not end with C<::_ModuleFeatures>, in which
+case it is a L</"feature declarer proxy module">.
+
+=head2 feature declarer proxy module
+
+A module that declares features for another module. Module name must end with
+C<::_ModuleFeatures> and the name of the module it delares features for is its
+own name sans the C<::_ModuleFeatures> suffix. For example, the module
+L<Text::Table::Tiny::_ModuleFeatures> contains L</"features declaration"> for
+L<Text::Table::Tiny>.
 
 =head2 feature name
 
@@ -63,14 +72,19 @@ C<TextTable>.
 A collection of L</"feature name">s along with each feature's
 L<specification|/"feature specification">.
 
+=head2 features declaration
+
+A L<DefHash> containing a list of feature set names and feature values for
+features of those feature sets.
+
 
 =head1 SPECIFICATION
 
 =head2 Defining feature set
 
-L<Definer module|/"definer module"> defines feature set by putting it in
-C<%FEATURES_DEF> package variable. Defining feature set should not require any
-module dependency.
+A L</"feature definer module"> specifies feature set by putting the L</"feature
+set specification"> in C<%FEATURES_DEF> package variable. Specifying feature set
+should not require any module dependency.
 
 For example, in L<Module::Features::TextTable>:
 
@@ -109,31 +123,43 @@ For example, in L<Module::Features::TextTable>:
 
 =head2 Declaring features
 
-L<Declarer module|/"declarer module"> declares features that it supports (or
-does not support) via putting it in C<%FEATURES> package variable. Declaring
-features should not require any module dependency, but a helper module can be
-written to help check that declared feature sets and features are known and the
-feature values conform to defined schemas.
+A L</"feature declarer module"> declares features that it supports (or does not
+support) via putting the L</"features declaration"> in C<%FEATURES> package
+variable. Declaring features should not require any module dependency, but a
+helper module can be written to help check that declared feature sets and
+features are known and the feature values conform to defined schemas.
 
-Not all features from a feature set need to be declared by the declarer module.
-The undeclared features will have C<undef> as their values for the declarer
-module. However, features defined as required (C<< req => 1 >> in the
+Not all features from a feature set need to be declared by the feature declarer
+module. The undeclared features will have C<undef> as their values for the
+declarer module. However, features defined as required (C<< req => 1 >> in the
 specification) MUST be declared.
 
 For example, in L<Text::Table::More>:
 
+ # a DefHash
  our %FEATURES = (
-     # each key is a feature set name.
-     TextTable => {
-         # each key is a feature name defined in the feature set. each value is
-         # either a feature value, or a DefHash that contains the feature value
-         # in the 'value' property, and notes in 'summary', and other things.
-         align_cell_containing_color_codes     => 1,
-         align_cell_containing_wide_characters => 1,
-         align_cell_containing_multiple_lines  => 1,
-         speed => {
-             value => 'slow', # if unspecified, value will become undef
-             summary => "It's certainly slower than Text::Table::Tiny, etc; and it can still be made faster after some optimization",
+     # optional, specifies which module version this declaration pertains to
+     #module_v => "0.002",
+
+     # optional, a numeric value to be compared against other declarations for
+     # the same module. recommended form is YYYYMMDD. for multiple serials in a
+     # single day, you can use YYYYMMDD.1, YYYYMMDD.2, YYYYMMDD.91, and so on.
+     #serial => 20210223,
+
+     features => {
+         # each key is a feature set name.
+         TextTable => {
+             # each key is a feature name defined in the feature set. each value
+             # is either a feature value, or a DefHash that contains the feature
+             # value in the 'value' property, and notes in 'summary', and other
+             # things.
+             align_cell_containing_color_codes     => 1,
+             align_cell_containing_wide_characters => 1,
+             align_cell_containing_multiple_lines  => 1,
+             speed => {
+                 value => 'slow', # if unspecified, value will become undef
+                 summary => "It's certainly slower than Text::Table::Tiny, etc; and it can still be made faster after some optimization",
+             },
          },
      },
  );
@@ -141,47 +167,63 @@ For example, in L<Text::Table::More>:
 While in L<Text::Table::Sprintf>:
 
  our %FEATURES = (
-     TextTable => {
-         align_cell_containing_color_codes     => 0,
-         align_cell_containing_wide_characters => 0,
-         align_cell_containing_multiple_lines  => 0,
-         speed                                 => 'fast',
+     features => {
+         TextTable => {
+             align_cell_containing_color_codes     => 0,
+             align_cell_containing_wide_characters => 0,
+             align_cell_containing_multiple_lines  => 0,
+             speed                                 => 'fast',
+         },
      },
  );
 
 and in L<Text::Table::Any>:
 
  our %FEATURES = (
-     TextTable => {
-         align_cell_containing_color_codes     => {value => undef, summary => 'Depends on the backend used'},
-         align_cell_containing_wide_characters => {value => undef, summary => 'Depends on the backend used'},
-         align_cell_containing_multiple_lines  => {value => undef, summary => 'Depends on the backend used'},
-         speed                                 => {value => undef, summary => 'Depends on the backend used'},
+     features => {
+         TextTable => {
+             align_cell_containing_color_codes     => {value => undef, summary => 'Depends on the backend used'},
+             align_cell_containing_wide_characters => {value => undef, summary => 'Depends on the backend used'},
+             align_cell_containing_multiple_lines  => {value => undef, summary => 'Depends on the backend used'},
+             speed                                 => {value => undef, summary => 'Depends on the backend used'},
+         },
      },
  );
 
+Features declaration can also be put in other places:
+
+=over
+
+=item * %FEATURES package variable in the L</"feature declarer proxy module">
+
+=item * database
+
+=item * others
+
+=back
+
+The %FEATURES package variable in the feature declarer module itself is
+considered to be authoritative, but other places can be checked first to avoid
+having to load the feature declarer module. When multiple features declaration
+exist, the C<module_v> and/or C<serial> can be used to find out which
+declaration is the most recent or suitable.
+
+
 =head2 Checking whether a module has a certain feature
 
-A L</"Declarer module"> user can check whether a declarer module has a certain
-feature simply by checking the declarer module's C<%FEATURES>. Checking features
-of a module should not require any module dependency.
+The user of a L</"feature declarer module"> can check whether the module has a
+certain feature simply by checking the module's L</"features declaration">
+(C<%FEATURES>). Checking features of a module should not require any module
+dependency.
 
-For example, to check whether
-Text::Table::Sprintf supports aligning cells that contain multiple lines:
+For example, to check whether Text::Table::Sprintf supports aligning cells that
+contain multiple lines:
 
- if (do { my $val = $Text::Table::Sprintf::FEATURES{TextTable}{align_cell_containing_multiple_lines}; ref $val eq 'HASH' ? $val->{value} : $val }) {
+ if (do { my $val = $Text::Table::Sprintf::FEATURES{features}{TextTable}{align_cell_containing_multiple_lines}; ref $val eq 'HASH' ? $val->{value} : $val }) {
      ...
  }
 
 A utility module can be written to help make this more convenient.
-
-
-=head2 Selecting modules by its feature
-
-Each module that one wants to select can be loaded and its C<%FEATURES> read. To
-avoid loading lots of modules, the features declaration can also be put
-somewhere else if wanted, like database, or per-distribution shared files, or
-distribution metadata. Currently no specific recommendation is given.
 
 
 =head1 FAQ
