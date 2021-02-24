@@ -8,14 +8,6 @@ package Module::Features;
 1;
 # ABSTRACT: Define features for modules
 
-=head1 DESCRIPTION
-
-This document specifies a very easy and lightweight way to define and declare
-features for modules. A definer module defines some features in a feature set,
-other modules declare these features that they have or don't have, and user can
-easily check and select modules based on features he/she wants.
-
-
 =head1 SPECIFICATION STATUS
 
 The series 0.1.x version is still unstable.
@@ -24,6 +16,18 @@ The series 0.1.x version is still unstable.
 =head1 SPECIFICATION VERSION
 
 0.1
+
+
+=head1 DESCRIPTION
+
+This document specifies a very easy and lightweight way to define and declare
+features for modules. A definer module defines some features in a feature set,
+other modules declare these features that they have or don't have, and user can
+easily check and select modules based on features he/she wants.
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
+interpreted as described in RFC 2119.
 
 
 =head1 GLOSSARY
@@ -44,10 +48,13 @@ case it is a L</"feature declarer proxy module">.
 =head2 feature declarer proxy module
 
 A module that declares features for another module. Module name must end with
-C<::_ModuleFeatures> and the name of the module it delares features for is its
-own name sans the C<::_ModuleFeatures> suffix. For example, the module
-L<Text::Table::Tiny::_ModuleFeatures> contains L</"features declaration"> for
-L<Text::Table::Tiny>.
+C<::_ModuleFeatures> and the name of the module it delares features for (the
+target module) is its own name sans the C<::_ModuleFeatures> suffix. For
+example, the module L<Text::Table::Tiny::_ModuleFeatures> contains L</"features
+declaration"> for L<Text::Table::Tiny>.
+
+The point of proxy module is to allow a different author declare features for a
+target module.
 
 =head2 feature name
 
@@ -61,6 +68,8 @@ The value of a feature.
 
 A L<DefHash>, containing the feature's summary, description, schema for value,
 and other things.
+
+See L</"Recommendation for feature name">.
 
 =head2 feature set name
 
@@ -90,36 +99,78 @@ For example, in L<Module::Features::TextTable>:
 
  # a DefHash
  our %FEATURES_DEF = (
+
+     # version number of the feature set. positive integer, begins at 1. should
+     # be increased whenever there's a backward-incompatible change in the
+     # feature set, i.e. when one or more features are renamed, deleted, change
+     # meaning, or change the schema in a backward-incompatible way (e.g. become
+     # more restricted or change type). when a feature set changes in a
+     # backward-compatible wa (e.g. a new feature is added, just the summary is
+     # revised, etc) then the version number need not be increased.
+     v => 1,
+
      summary => 'Features of a text table generator',
+
      description => <<'_',
  This feature set defines features of a text table generator. By declaring these
  features, the module author makes it easier for module users to choose an
  appropriate module.
  _
-     features => {
-         # each key is a feature name. each value is the feature's specification.
 
-         align_cell_containing_color_codes => {
+     features => {
+
+         # each key is a feature name. each value is the feature's
+         # specification. see recommendation on feature name in this
+         # specification.
+
+         can_align_cell_containing_color_code => {
              # a regular DefHash with common properties like 'summary',
              # 'description', 'tags', etc. can also contain these properties:
              # 'schema', 'req' (whether the feature must be declared by user
              # module).
 
              summary => 'Whether the module can align cells that contain ANSI color codes',
-             # schema => 'bool*', # Sah schema. if not specified, the default is 'bool*'
+             # schema => 'bool', # Sah schema. if not specified, the default is 'bool'
+
+             tags => ['category:alignment'],
          },
-         align_cell_containing_multiple_lines => {
+         can_align_cell_containing_newline => {
              summary => 'Whether the module can align cells that contain multiple lines of text',
+             tags => ['category:alignment'],
          },
-         align_cell_containing_wide_characters => {
+         can_align_cell_containing_wide_character => {
              summary => 'Whether the module can align cells that contain wide Unicode characters',
+             tags => ['category:alignment', 'category:unicode'],
          },
          speed => {
              summary => 'The speed of the module, according to the author',
-             schema => ['int', in=>['slow', 'medium', 'fast']],
+             schema => ['str', in=>['slow', 'medium', 'fast']],
          },
      },
  );
+
+=head3 Recommendation for feature name
+
+Features should be written in lower case and words are separated by underscores,
+e.g. C<can_color>, C<max_colors>. The name should be self-explanatory when
+possible and should use English.
+
+Singular noun is preferred (e.g C<can_align_cell_containing_wide_character>
+instead of C<can_align_cells_containing_wide_characters>) unless when
+is is grammatically required to be plurals, e.g. C<max_colors>.
+
+Abbreviations should be avoided unless when an abbrevation is common, e.g.
+C<require_filesystem> is preferred over C<req_fs>, but C<max_colors> is okay.
+
+Infinitive form of verb is preferred, e.g. C<need_filesystem_access> instead of
+C<needs_filesystem_access>, C<have_foo> instead of C<has_foo>.
+
+Features that refer to whether a module as a specific ability should be named
+with C<can_> prefix. Examples: C<can_align_cell_containing_wide_character>,
+C<can_color>. These features have a bool value ("yes" or "no").
+
+Features that specify an upper or lower limit of something should be named with
+C<max_> or C<min_> prefix. They typically have int/float/num schemas.
 
 =head2 Declaring features
 
