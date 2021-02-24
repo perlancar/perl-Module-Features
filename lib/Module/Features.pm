@@ -100,13 +100,14 @@ For example, in L<Module::Features::TextTable>:
  # a DefHash
  our %FEATURES_DEF = (
 
-     # version number of the feature set. positive integer, begins at 1. should
-     # be increased whenever there's a backward-incompatible change in the
-     # feature set, i.e. when one or more features are renamed, deleted, change
-     # meaning, or change the schema in a backward-incompatible way (e.g. become
-     # more restricted or change type). when a feature set changes in a
-     # backward-compatible wa (e.g. a new feature is added, just the summary is
-     # revised, etc) then the version number need not be increased.
+     # version number of the feature set. positive integer, begins at 1.
+     # optional, default is 1 if unspecified. should be increased whenever
+     # there's a backward-incompatible change in the feature set, i.e. when one
+     # or more features are renamed, deleted, change meaning, or change the
+     # schema in a backward-incompatible way (e.g. become more restricted or
+     # change type). when a feature set changes in a backward-compatible wa
+     # (e.g. a new feature is added, just the summary is revised, etc) then the
+     # version number need not be increased.
      v => 1,
 
      summary => 'Features of a text table generator',
@@ -162,12 +163,21 @@ is is grammatically required to be plurals, e.g. C<max_colors>.
 Abbreviations should be avoided unless when an abbrevation is common, e.g.
 C<require_filesystem> is preferred over C<req_fs>, but C<max_colors> is okay.
 
-Infinitive form of verb is preferred, e.g. C<need_filesystem_access> instead of
-C<needs_filesystem_access>, C<have_foo> instead of C<has_foo>.
+Infinitive form of verb is preferred, e.g. C<require_filesystem_access> instead
+of C<requires_filesystem_access>.
 
-Features that refer to whether a module as a specific ability should be named
+Features that refer to whether a module has a specific ability should be named
 with C<can_> prefix. Examples: C<can_align_cell_containing_wide_character>,
-C<can_color>. These features have a bool value ("yes" or "no").
+C<can_color>. These features have a bool value ("yes" or "no"). C<have_> or
+C<able_to_> prefix is not preferred.
+
+Features that refer to whether a module needs (requires) a specific
+feature/resource to function should be named with C<require_> prefix. C<need_>
+prefix is not preferred. Examples: C<require_filesystem_access>.
+
+Features that refer to whether a module can optionally use or prefers something
+should be named with C<can_use_> prefix. C<prefer_> or C<want_> prefix is not
+preferred.
 
 Features that specify an upper or lower limit of something should be named with
 C<max_> or C<min_> prefix. They typically have int/float/num schemas.
@@ -189,6 +199,11 @@ For example, in L<Text::Table::More>:
 
  # a DefHash
  our %FEATURES = (
+
+     # optional. specify the version of the feature set this declaration uses.
+     # the version of feature set must match. defaults to 1 if unspecified.
+     #set_v => 1,
+
      # optional, specifies which module version this declaration pertains to
      #module_v => "0.002",
 
@@ -204,11 +219,11 @@ For example, in L<Text::Table::More>:
              # is either a feature value, or a DefHash that contains the feature
              # value in the 'value' property, and notes in 'summary', and other
              # things.
-             align_cell_containing_color_codes     => 1,
-             align_cell_containing_wide_characters => 1,
-             align_cell_containing_multiple_lines  => 1,
+             can_align_cell_containing_color_code     => 1,
+             can_align_cell_containing_wide_character => 1,
+             can_align_cell_containing_newline        => 1,
              speed => {
-                 value => 'slow', # if unspecified, value will become undef
+                 value => 'slow', # if unspecified, value will become undef (which means N/A [not available])
                  summary => "It's certainly slower than Text::Table::Tiny, etc; and it can still be made faster after some optimization",
              },
          },
@@ -220,9 +235,9 @@ While in L<Text::Table::Sprintf>:
  our %FEATURES = (
      features => {
          TextTable => {
-             align_cell_containing_color_codes     => 0,
-             align_cell_containing_wide_characters => 0,
-             align_cell_containing_multiple_lines  => 0,
+             can_align_cell_containing_color_code     => 0,
+             can_align_cell_containing_wide_character => 0,
+             can_align_cell_containing_newline        => 0,
              speed                                 => 'fast',
          },
      },
@@ -233,10 +248,10 @@ and in L<Text::Table::Any>:
  our %FEATURES = (
      features => {
          TextTable => {
-             align_cell_containing_color_codes     => {value => undef, summary => 'Depends on the backend used'},
-             align_cell_containing_wide_characters => {value => undef, summary => 'Depends on the backend used'},
-             align_cell_containing_multiple_lines  => {value => undef, summary => 'Depends on the backend used'},
-             speed                                 => {value => undef, summary => 'Depends on the backend used'},
+             can_align_cell_containing_color_code     => {value => undef, summary => 'Depends on the backend used'},
+             can_align_cell_containing_wide_character => {value => undef, summary => 'Depends on the backend used'},
+             can_align_cell_containing_newline        => {value => undef, summary => 'Depends on the backend used'},
+             speed                                    => {value => undef, summary => 'Depends on the backend used'},
          },
      },
  );
