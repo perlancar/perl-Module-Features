@@ -200,9 +200,10 @@ For example, in L<Text::Table::More>:
  # a DefHash
  our %FEATURES = (
 
-     # optional. specify the version of the feature set this declaration uses.
-     # the version of feature set must match. defaults to 1 if unspecified.
-     #set_v => 1,
+     # optional. specify the versions of the feature sets this declaration uses.
+     # the version of feature set must match. versions defaults to 1 if
+     # unspecified.
+     #set_v => {TextTable => 1},
 
      # optional, specifies which module version this declaration pertains to
      #module_v => "0.002",
