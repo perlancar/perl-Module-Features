@@ -10,7 +10,7 @@ package Module::Features;
 
 =head1 SPECIFICATION STATUS
 
-The series 0.1.x version is still unstable.
+The 0.1.x version series is still unstable.
 
 
 =head1 SPECIFICATION VERSION
