@@ -58,7 +58,7 @@ target module.
 
 =head2 feature name
 
-A string, preferably an identifier matching regex pattern /\A\w+\z/.
+A non-empty string, preferably an identifier matching regex pattern /\A\w+\z/.
 
 =head2 feature value
 
