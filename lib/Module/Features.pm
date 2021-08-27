@@ -89,6 +89,7 @@ features of those feature sets.
 
 =head1 SPECIFICATION
 
+
 =head2 Defining feature set
 
 A L</"feature definer module"> specifies feature set by putting the L</"feature
@@ -150,7 +151,8 @@ For example, in L<Module::Features::TextTable>:
      },
  );
 
-=head3 Recommendation for feature name
+
+=head2 Recommendations for feature name
 
 Features should be written in lower case and words are separated by underscores,
 e.g. C<can_color>, C<max_colors>. The name should be self-explanatory when
@@ -181,6 +183,14 @@ preferred.
 
 Features that specify an upper or lower limit of something should be named with
 C<max_> or C<min_> prefix. They typically have int/float/num schemas.
+
+
+=head2 Recommendations for feature definer module
+
+The distribution that ships a feature definer module should add a dependency
+(phase=develop, rel=x_spec) to C<Module::Features>, to express that it follows
+the Module::Features specification.
+
 
 =head2 Declaring features
 
@@ -274,6 +284,16 @@ considered to be authoritative, but other places can be checked first to avoid
 having to load the feature declarer module. When multiple features declaration
 exist, the C<module_v> and/or C<serial> can be used to find out which
 declaration is the most recent or suitable.
+
+
+=head2 Recommendations for feature declarer module
+
+The distribution that ships a feature declarer module should add a dependency
+(phase=develop, rel=x_spec) to C<Module::Features>, to express that it follows
+the Module::Features specification. It should also add a dependency
+(phase=develop, x=features_from> to associated feature definer module(s), to
+express that it declares features defined in the associated feature definer
+module(s).
 
 
 =head2 Checking whether a module has a certain feature
